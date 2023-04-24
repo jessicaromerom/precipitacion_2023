@@ -1,0 +1,46 @@
+---
+title: "analisisNA"
+format: html
+editor: visual
+---
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+
+data_prec <- readRDS("../data/data_procesada/data_prec.rds")
+metadata <- readRDS("../data/data_procesada/metadata.rds")
+
+data_prec |> 
+  glimpse()
+
+```
+
+Transformar columna 'fecha' a formato as_date() e identificar años disponibles en la data:
+
+```{r}
+data_prec |> 
+  mutate(fecha = as_date(fecha))|> 
+  distinct(year(fecha)) |> 
+  glimpse()
+```
+
+Datos desde 1981 con valor != -9999 (NA):
+
+```{r}
+data_1981_2020 <- data_prec |> 
+  mutate(fecha = as_date(fecha)) |>
+  filter(year(fecha) >= 1981) |> 
+  filter(valor != -9999) |> 
+  glimpse() 
+```
+
+Estaciones con mas observaciones:
+
+```{r}
+n_codigo_estacion <- data_1981_2020 |> 
+  count(codigo_estacion) |> 
+  glimpse()
+```

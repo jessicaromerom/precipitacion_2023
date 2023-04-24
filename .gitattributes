@@ -1,0 +1,8 @@
+*.rds filter=lfs diff=lfs merge=lfs -text
+data/data_raw/cr2_prDaily_2020_ghcn.txt filter=lfs diff=lfs merge=lfs -text
+data/data_procesada/data_prec.rds filter=lfs diff=lfs merge=lfs -text
+.txt filter=lfs diff=lfs merge=lfs -text
+*txt filter=lfs diff=lfs merge=lfs -text
+cr2_prDaily_2020_ghcn.txt filter=lfs diff=lfs merge=lfs -text
+data_prec.rds filter=lfs diff=lfs merge=lfs -text
+*.txt filter=lfs diff=lfs merge=lfs -text
