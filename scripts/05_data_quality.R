@@ -12,8 +12,6 @@ data_1981_2020_na_prop <- read_rds('data/data_procesada/data_1981_2020_na_prop.r
 data_ubi_utm <- left_join(data_1981_2020_na_prop, data_estaciones_utm, by = 'codigo_estacion') 
 data_1981_2020_na <- read_rds('data/data_procesada/data_1981_2020_na.rds')
 
-
-
 #Cluster por cercania----
 coordenadas<- data_ubi_utm |> 
   select(X,Y) |> 
@@ -55,6 +53,7 @@ data_cluster |>
 #reddPrec-----
 
 data_rp <- data_1981_2020_na |> 
+  arrange(codigo_estacion) |> 
   mutate(valor=as.numeric(valor)) |> 
   #select(codigo_estacion, valor) |> 
   pivot_wider(names_from=codigo_estacion, values_from=valor) |> 
@@ -62,6 +61,7 @@ data_rp <- data_1981_2020_na |>
   as.matrix()
 
 data_sts <- data_ubi_utm |> 
+  arrange(codigo_estacion) |> 
   select(codigo_estacion, altura, X, Y) |> 
   mutate(ALT=as.numeric(altura), X=as.numeric(X), Y=as.numeric(Y)) |>
   rename(ID=codigo_estacion) |> 
@@ -71,13 +71,21 @@ inicio <- as.Date("1981-01-01")
 final <- as.Date("2020-03-31")
 
 #data("precipDataset")
-data_rp_sampled <- data_rp |> 
-  as.data.frame() |> 
-  sample_frac(0.1) |> 
-  as.matrix()
 
-data_sts_sampled <- data_sts |> 
-  sample_frac(0.1)
+ids <- sample(1:1254,10)
+
+data_rp_sampled <- data_rp[,ids]
+st_selec <- attributes(data_rp)[[2]][[2]][ids]
+
+# data_rp_sampled <- data_rp |> 
+#   as.data.frame() |> 
+#   sample_frac(0.1) |> 
+#   as.matrix()
+
+data_sts_sampled <- data_sts[ids,]
+
+# data_sts_sampled <- data_sts |> 
+#   sample_frac(0.1)
 
 inicio_s <- as.Date("1981-01-01")
 final_s <- inicio_s + 124
@@ -88,7 +96,7 @@ if (nrow(data_rp_sampled) != nrow(data_sts_sampled)) {
   stop("Los conjuntos de datos tienen cantidad de filas diferentes.")
 }
 
-qcPrec(data_rp_sampled, data_sts_sampled, inicio_s, final_s, parallel = TRUE, ncpu = 2, printmeta = TRUE, thres = NA)
+qcPrec(data_rp_sampled, data_sts_sampled, inicio, final, parallel = TRUE, ncpu = 5, printmeta = TRUE, thres = NA)
 
 
 class(data_sts)
