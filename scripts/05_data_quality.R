@@ -6,10 +6,11 @@ library(tidyverse)
 library(ggplot2)
 library(reddPrec)
 
-data_prec <- read_rds('data/data_procesada/data_prec.rds')
+
 data_estaciones_utm <- read_rds('data/data_procesada/data_estac_utm.rds')
 data_1981_2020_na_prop <- read_rds('data/data_procesada/data_1981_2020_na_prop.rds')
 data_ubi_utm <- left_join(data_1981_2020_na_prop, data_estaciones_utm, by = 'codigo_estacion') 
+data_1981_2020_na <- read_rds('data/data_procesada/data_1981_2020_na.rds')
 
 
 
@@ -79,7 +80,7 @@ data_sts_sampled <- data_sts |>
   sample_frac(0.1)
 
 inicio_s <- as.Date("1981-01-01")
-final_s <- inicio_S + 124
+final_s <- inicio_s + 124
 final_s |> 
   as.Date()
 
@@ -90,16 +91,95 @@ if (nrow(data_rp_sampled) != nrow(data_sts_sampled)) {
 qcPrec(data_rp_sampled, data_sts_sampled, inicio_s, final_s, parallel = TRUE, ncpu = 2, printmeta = TRUE, thres = NA)
 
 
- nclass(data_sts)
+class(data_sts)
 
 
-#Qoutliers 3 veces el rango intercuantil reddPrec
+#Qoutliers Paper----
+#outliers_prop
+
+#funcion de Q (calidad indidual de 0 a 100)
+calc_Q <- function(P, ngap, Lmaxgap, CV, outliers_prop) {
+  Q <- (1/4) * (P + (100 - 100/(2*ngap + Lmaxgap/n)) + (100 - 100(CV)) + (100 - outliers_prop))
+  return(Q)
+}
+
+
+P <- ndays / n
+
+#Qgaps
+ngap <- ngap #n dias sin datos del anio
+Lmaxgap <- Lmaxgap # longitud maxima de un periodo vacio sin datos
+
+#Qwzeros
+rainy_days <- c(n_mon, n_tue, n_wed, n_thu, n_fri, n_sat, n_sun) #numero de dias de precipitacion de la semana
+CV <- sd(rainy_days) / mean(rainy_days) #coeficiente de variacion para cada anio
+
+n_estacion<-data_1981_2020_na |> 
+  filter(codigo_estacion == '09417002') |>
+  select(fecha, valor) |> 
+  mutate(fecha = as.Date(fecha), valor =  as.numeric(valor)) |> 
+  glimpse()
+
+#Qoutliers
+
+Qout <- apply(matrix(n_estacion$valor, ncol = 30, byrow = TRUE), 2, function(x) quantile(x, probs = 0.75))
+
+class(n_estacion)
+Qout <- n_estacion$valor
+IQR(Qout, na.rm=TRUE)
+
+#IQR rango intercuartil
+#tabla con la mediana y el IQR para cada estación y cada año
+IQR <- data_1981_2020_na %>% 
+  group_by(codigo_estacion, year(fecha)) %>% 
+  summarize(mediana = median(valor, na.rm = TRUE),
+            iqr = IQR(valor, na.rm = TRUE)) |> 
+  glimpse()
 
 
 
 
 
+#Calcula el número de días de precipitación disponibles para cada año
+n_days <- aggregate(fecha ~ year(fecha), data = n_estacion, FUN = function(x) sum(!is.na(x)))
 
+P <- n_days$fecha / 365 * 100 #porcentaje de dias con valor de precipitacion disponible
+
+
+#Calcula el número de días sin precipitación (ngap) y la longitud máxima de un período sin datos (Lmaxgap)
+gap_stats <- aggregate(fecha ~ year(fecha), data = n_estacion, FUN = function(x) {
+  ngap <- sum(is.na(x))
+  if (ngap > 0) {
+    gap_lengths <- rle(is.na(x))
+    Lmaxgap <- max(gap_lengths$lengths[gap_lengths$values])
+  } else {
+    Lmaxgap <- 0
+  }
+  data.frame(ngap = ngap, Lmaxgap = Lmaxgap)
+})
+
+#Calcula el término Qgaps para cada año utilizando la fórmula del paper
+Qgaps <- 100 - 100 * (2 * gap_stats$ngap + gap_stats$Lmaxgap) / 365
+
+#Calcula el número de días de precipitación para cada día de la semana (ni) y el coeficiente de variación (CV) para cada año utilizando la siguiente función
+
+
+weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+
+week_stats <- aggregate(fecha ~ year(fecha), data = n_estacion, FUN = function(x) {
+  x$date <- as.Date(x$fecha)
+  daily_precip <- tapply(x$fecha, format(x$date, "%u"), function(x) sum(!is.na(x)))
+  ni <- numeric(length(weekdays))
+  names(ni) <- weekdays
+  ni[names(daily_precip)] <- daily_precip
+  CV <- sd(ni) / mean(ni)
+  data.frame(ni = ni, CV = CV)
+})
+
+#Calcula el término Qwzero para cada año
+Qwzero <- 100 - 100 * week_stats$CV
+
+#outliers_threshold <- apply(matrix(your_data$Precipitation, ncol = 30, byrow = TRUE), 2, function(x) quantile(x, probs = c(0.25, 0.
 
 
 
