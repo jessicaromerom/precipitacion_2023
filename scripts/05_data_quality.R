@@ -72,7 +72,7 @@ final <- as.Date("2020-03-31")
 
 #data("precipDataset")
 
-ids <- sample(1:1254,10)
+#ids <- sample(1:1254,10)
 
 data_rp_sampled <- data_rp[,ids]
 st_selec <- attributes(data_rp)[[2]][[2]][ids]
@@ -96,8 +96,12 @@ if (nrow(data_rp_sampled) != nrow(data_sts_sampled)) {
   stop("Los conjuntos de datos tienen cantidad de filas diferentes.")
 }
 
-qcPrec(data_rp_sampled, data_sts_sampled, inicio, final, parallel = TRUE, ncpu = 5, printmeta = TRUE, thres = NA)
+qcPrec(data_rp[,101:150], data_sts[101:150,], inicio, final, parallel = TRUE, ncpu = 85, printmeta = TRUE, thres = NA)
 
+cod_rp <- attributes(data_rp)[[2]][[2]]
+cod_sts <- data_sts[,1]
+
+all.equal(cod_rp,cod_sts)
 
 class(data_sts)
 
