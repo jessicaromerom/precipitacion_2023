@@ -44,7 +44,7 @@ meta <- read_delim('../data/data_raw/cr2_prDaily_2020/cr2_prDaily_2020.txt')[1:1
 
 El resultado de esto se guarda como archivos .rds, que incluyen un archivo de precipitacion para los valores de 598 estaciones desde enero de 1981 hasta marzo 2023 y un arhivo de la metada con la información de las estaciones correspondientes. 
 
-Precipitacion: 
+Datos Precipitacion: 
 ```{r}
 data_pre <- read_rds('../data/data_procesada/data_pre_1981_2020_chile.rds')
 data_pre |> glimpse()

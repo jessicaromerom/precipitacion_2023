@@ -177,7 +177,7 @@ chr (880): codigo_estacion, 01000005, 01200002, 01200003, 01201005, 01201010...
 <li>Filtrado de datos con valores mayores a 0 y más de 10 años de datos: Se aplicó un filtro adicional para eliminar los datos de precipitación menores a 0 y que no contaran con al menos 10 años de registros.</li>
 </ul>
 <p>El resultado de esto se guarda como archivos .rds, que incluyen un archivo de precipitacion para los valores de 598 estaciones desde enero de 1981 hasta marzo 2023 y un arhivo de la metada con la información de las estaciones correspondientes.</p>
-<p>Precipitacion:</p>
+<p>Datos Precipitacion:</p>
 <div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-3_6c98098764a8ec9821f66bd2a5452c23">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_pre <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/data_pre_1981_2020_chile.rds'</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data_pre <span class="sc">|&gt;</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
