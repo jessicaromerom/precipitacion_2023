@@ -1,0 +1,147 @@
+---
+title: "Análisis exploratorio y control de calidad"
+author: "Jessica Romero"
+format: html
+editor: visual
+execute:
+  cache: true
+---
+
+## Datos de precipitación
+
+El presente informe presenta los resultados del procesamiento de los datos de precipitación acumulada diaria observados en estaciones de todo Chile. El período a analizar de los datos extraídos del CR2 abarca desde enero de 1981 hasta marzo de 2020.
+
+Para acceder a la ubicación en línea de los recursos utilizados, puedes dirigirte al siguiente enlace: http://www.cr2.cl/recursos-y-publicaciones/bases-de-datos/
+
+Librerías necesarias:
+
+```{r warning=FALSE,message=FALSE}
+library(readr)
+library(sf)
+library(reddPrec)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+```
+
+
+Para aplicar el control de calidad de los datos de precipitación, se llevaron a cabo los siguientes pasos de preprocesamiento en el contexto de este proyecto:
+
+- Separación de valores y metadata: Se llevó a cabo la separación de los valores de precipitación y la información de las esatciones del archivo original. 
+
+```{r}
+data <- read_delim('../data/data_raw/cr2_prDaily_2020/cr2_prDaily_2020.txt')[-(1:14),]
+meta <- read_delim('../data/data_raw/cr2_prDaily_2020/cr2_prDaily_2020.txt')[1:14,]
+```
+
+- Filtrado de datos desde 1981 en adelante: Se aplicó un filtro para mantener únicamente los datos de precipitación correspondientes al período a partir de 1981. 
+- Transformación de valores nulos: Se realizó una transformación de los valores nulos o faltantes (NAs) en los datos de precipitación. 
+- Filtrado de datos con valores mayores a 0 y más de 10 años de datos: Se aplicó un filtro adicional para eliminar los datos de precipitación menores a 0 y que no contaran con al menos 10 años de registros.
+
+
+El resultado de esto se guarda como archivos .rds, que incluyen un archivo de precipitacion para los valores de 598 estaciones desde enero de 1981 hasta marzo 2023 y un arhivo de la metada con la información de las estaciones correspondientes. 
+
+Precipitacion: 
+```{r}
+data_pre <- read_rds('../data/data_procesada/data_pre_1981_2020_chile.rds')
+data_pre |> glimpse()
+
+```
+
+Metadata:
+```{r}
+meta <- read_rds('../data/data_procesada/metadata_pre_1981_2020_chile.rds')
+meta |> glimpse()
+
+```
+
+## Control de Calidad 
+
+Para realizar el control de calidad en las bases de datos, se utilizó el paquete 'reddPrec' de RStudio. Este paquete se enfoca en la reconstrucción de la precipitación diaria. 
+
+La metodología implementada en este paquete se basa en la creación de valores de referencia diarios (RV) utilizando los datos registrados en las estaciones más cercanas para cada día objetivo a través de la regresión logística multivariada.
+
+El RV final se determina combinando la probabilidad de ocurrencia de precipitación (BP) y la magnitud de precipitación (MP) utilizando un umbral predefinido para determinar si es un día lluvioso. Además de los valores RV estimados, se registran los errores correspondientes como medida de incertidumbre. Estos valores RV se utilizan para desarrollar el control de calidad, comparándolos con los datos originales para detectar y eliminar datos sospechosos.
+
+Para ejecutar la función qcPrec() del paquete, se requieren los siguientes objetos: 
+
+El objeto 'prec' de clase matriz, que contiene las observaciones reales de la precipitación (1/10 mm). Los nombres de las columnas deben ser los nombres de las estaciones:
+
+```{r}
+data_pre_mat <- data_pre |> 
+  pivot_wider(names_from = cod_sta) |> 
+  arrange(dates) |> 
+  select(-dates) |> 
+  as.matrix() |> 
+  glimpse()
+
+```
+
+Objeto sts de clase matriz que contiene la información de las estaciones, con cuatro campos: ID: identificador de la estación; ALT: altitud; X: longitud en proyección UTM (metros); e Y: latitud en proyección UTM (metros):
+
+```{r}
+#leer metadata estaciones y obtener coordenadas en UTM
+meta <- read_rds('../data/data_procesada/metadata_cr2_pre_1981_2020_chile.rds') |> 
+  select(name,altura,latitud,longitud) |> 
+  st_as_sf(coords = c('longitud','latitud'),crs=4326) |> 
+  st_transform(32719) 
+
+# reordenar y renombrar
+meta_df <- meta |> 
+  st_coordinates() |> 
+  bind_cols(meta) |> 
+  relocate(name,.before =X) |>
+  relocate(altura,.before= X) |> 
+  select(-geometry) |> 
+  mutate(altura = as.numeric(altura)) |> 
+  rename(ID = name,ALT = altura) |> 
+  glimpse()
+
+
+```
+Tambien toma dos objetivos de clase Date en formato 'YYYY-mm-dd' definiendo el primer (inidate) y ultimo (enddate) dia para el proceso control de calidad. 
+
+Funcion qcPrec():
+```{r}
+#qcPrec(data_pre_mat, meta_df, as.Date("1981-01-01"), as.Date("2020-03-31"), parallel = TRUE, ncpu = 85, printmeta = TRUE, thres = NA)
+```
+
+Luego de esta funcion se crea un nuevo archivo llamado Cleaned.RData y almacenado el directorio de trabajo. Al cargar este archivo se agregara una matriz con la data filtrada por el control de calidad.
+
+```{r}
+load('../cleaned.RData')
+
+prec |> 
+  mutate(dates = seq(ymd(19810101),ymd(20200331),by=1)) |> 
+  pivot_longer(-dates,names_to = 'codigo_estacion',values_to = 'pre') |> 
+  write_rds('../data/data_procesada/data_1981_2020_chile_qc.rds') |> 
+  glimpse()
+```
+Leer datos de salida (justo al control de calidad de los datos de agromet): se obtienen los valores de precipitacion para 1,011 estaciones
+
+
+```{r}
+data_pre_cr2 <- read_rds('../data/data_procesada/data_CR2_1981_2020_chile_qc.rds')
+data_pre_agromet <- read_rds('../data/data_procesada/data_agromet_20100102_20230521_chile_qc.rds')
+
+bind_rows(data_pre_cr2,data_pre_agromet) |> 
+  glimpse()
+
+bind_rows(data_pre_cr2,data_pre_agromet) |> 
+  distinct(codigo_estacion) |> 
+  glimpse()
+
+```
+## Referencias
+
+Serrano-Notivoli, R., de Luis, M., & Beguería, S. (2017). An R package for daily precipitation climate series reconstruction. Environmental modelling & software, 89, 190-195.
+
+
+
+
+
+
+
