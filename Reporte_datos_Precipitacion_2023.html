@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jessica Romero">
+
+<title>Análisis exploratorio y control de calidad</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="Reporte_datos_Precipitacion_2023_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/quarto.js"></script>
+<script src="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/popper.min.js"></script>
+<script src="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Reporte_datos_Precipitacion_2023_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Reporte_datos_Precipitacion_2023_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Reporte_datos_Precipitacion_2023_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Reporte_datos_Precipitacion_2023_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis exploratorio y control de calidad</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jessica Romero </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="datos-de-precipitación" class="level2">
+<h2 class="anchored" data-anchor-id="datos-de-precipitación">Datos de precipitación</h2>
+<p>El presente informe presenta los resultados del procesamiento de los datos de precipitación acumulada diaria observados en estaciones de todo Chile. El período a analizar de los datos extraídos del CR2 abarca desde enero de 1981 hasta marzo de 2020.</p>
+<p>Para acceder a la ubicación en línea de los recursos utilizados, puedes dirigirte al siguiente enlace: http://www.cr2.cl/recursos-y-publicaciones/bases-de-datos/</p>
+<p>Librerías necesarias:</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-1_f7ca28c6d0e66109fef1c300722cfb37">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reddPrec)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para aplicar el control de calidad de los datos de precipitación, se llevaron a cabo los siguientes pasos de preprocesamiento en el contexto de este proyecto:</p>
+<ul>
+<li>Separación de valores y metadata: Se llevó a cabo la separación de los valores de precipitación y la información de las esatciones del archivo original.</li>
+</ul>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-2_542c182402ddb6098c05755df214563c">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">'../data/data_raw/cr2_prDaily_2020/cr2_prDaily_2020.txt'</span>)[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 43934 Columns: 880
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (880): codigo_estacion, 01000005, 01200002, 01200003, 01201005, 01201010...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">'../data/data_raw/cr2_prDaily_2020/cr2_prDaily_2020.txt'</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 43934 Columns: 880
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (880): codigo_estacion, 01000005, 01200002, 01200003, 01201005, 01201010...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<ul>
+<li>Filtrado de datos desde 1981 en adelante: Se aplicó un filtro para mantener únicamente los datos de precipitación correspondientes al período a partir de 1981.</li>
+<li>Transformación de valores nulos: Se realizó una transformación de los valores nulos o faltantes (NAs) en los datos de precipitación.</li>
+<li>Filtrado de datos con valores mayores a 0 y más de 10 años de datos: Se aplicó un filtro adicional para eliminar los datos de precipitación menores a 0 y que no contaran con al menos 10 años de registros.</li>
+</ul>
+<p>El resultado de esto se guarda como archivos .rds, que incluyen un archivo de precipitacion para los valores de 598 estaciones desde enero de 1981 hasta marzo 2023 y un arhivo de la metada con la información de las estaciones correspondientes.</p>
+<p>Datos Precipitacion:</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-3_6c98098764a8ec9821f66bd2a5452c23">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_pre <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/data_pre_1981_2020_chile.rds'</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data_pre <span class="sc">|&gt;</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6,404,998
+Columns: 3
+$ dates   &lt;date&gt; 1981-01-01, 1981-01-02, 1981-01-03, 1981-01-04, 1981-01-05, 1…
+$ cod_sta &lt;chr&gt; "01000005", "01000005", "01000005", "01000005", "01000005", "0…
+$ value   &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 18.0, 21.0, 20.0, 11.0, 0.0, 0.0, 0.0, 0.0…</code></pre>
+</div>
+</div>
+<p>Metadata:</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-4_0c1ca1b6383a25b277d32e94c9d814c8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/metadata_pre_1981_2020_chile.rds'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>meta <span class="sc">|&gt;</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 598
+Columns: 15
+$ cod_sta                &lt;chr&gt; "01000005", "01001005", "01010007", "01010010",…
+$ institucion            &lt;chr&gt; "DGA", "DGA", "DGA", "DGA", "DGA", "DGA", "DGA"…
+$ fuente                 &lt;chr&gt; "dga_web", "dga_web", "dga_web", "dga_web", "dg…
+$ nombre                 &lt;chr&gt; "Visviri", "Caquena", "Chungara Reten", "Chunga…
+$ altura                 &lt;chr&gt; "4080", "4400", "4570", "4585", "4550", "4400",…
+$ latitud                &lt;chr&gt; "-17.595", "-18.0542", "-18.2808", "-18.2353", …
+$ longitud               &lt;chr&gt; "-69.4831", "-69.2017", "-69.1383", "-69.1833",…
+$ codigo_cuenca          &lt;chr&gt; "10", "10", "10", "10", "10", "10", "10", "10",…
+$ nombre_cuenca          &lt;chr&gt; "Altiplanicas", "Altiplanicas", "Altiplanicas",…
+$ codigo_sub_cuenca      &lt;chr&gt; "100", "100", "101", "101", "102", "102", "102"…
+$ nombre_sub_cuenca      &lt;chr&gt; "Entre Limite Peru-Bolivia Y Rio Lauca", "Entre…
+$ inicio_observaciones   &lt;chr&gt; "1968-05-01", "1970-01-01", "1962-07-01", "1983…
+$ fin_observaciones      &lt;chr&gt; "2020-03-31", "2019-12-30", "2019-11-30", "2020…
+$ cantidad_observaciones &lt;chr&gt; "18258", "16129", "17929", "12953", "19947", "2…
+$ inicio_automatica      &lt;chr&gt; "2017-08-02", "-", "-", "2017-10-02", "-", "201…</code></pre>
+</div>
+</div>
+</section>
+<section id="control-de-calidad" class="level2">
+<h2 class="anchored" data-anchor-id="control-de-calidad">Control de Calidad</h2>
+<p>Para realizar el control de calidad en las bases de datos, se utilizó el paquete ‘reddPrec’ de RStudio. Este paquete se enfoca en la reconstrucción de la precipitación diaria.</p>
+<p>La metodología implementada en este paquete se basa en la creación de valores de referencia diarios (RV) utilizando los datos registrados en las estaciones más cercanas para cada día objetivo a través de la regresión logística multivariada.</p>
+<p>El RV final se determina combinando la probabilidad de ocurrencia de precipitación (BP) y la magnitud de precipitación (MP) utilizando un umbral predefinido para determinar si es un día lluvioso. Además de los valores RV estimados, se registran los errores correspondientes como medida de incertidumbre. Estos valores RV se utilizan para desarrollar el control de calidad, comparándolos con los datos originales para detectar y eliminar datos sospechosos.</p>
+<p>Para ejecutar la función qcPrec() del paquete, se requieren los siguientes objetos:</p>
+<p>El objeto ‘prec’ de clase matriz, que contiene las observaciones reales de la precipitación (1/10 mm). Los nombres de las columnas deben ser los nombres de las estaciones:</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-5_66f6aa5fbc997e5740bf1b2430052fba">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data_pre_mat <span class="ot">&lt;-</span> data_pre <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> cod_sta) <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(dates) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>dates) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> num [1:14335, 1:598] 0 0 0 0 18 21 20 11 0 0 ...
+ - attr(*, "dimnames")=List of 2
+  ..$ : NULL
+  ..$ : chr [1:598] "01000005" "01001005" "01010007" "01010010" ...</code></pre>
+</div>
+</div>
+<p>Objeto sts de clase matriz que contiene la información de las estaciones, con cuatro campos: ID: identificador de la estación; ALT: altitud; X: longitud en proyección UTM (metros); e Y: latitud en proyección UTM (metros):</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-6_0ce6748781e9b821b55c9684e196da1d">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#leer metadata estaciones y obtener coordenadas en UTM</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/metadata_cr2_pre_1981_2020_chile.rds'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name,altura,latitud,longitud) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">'longitud'</span>,<span class="st">'latitud'</span>),<span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">32719</span>) </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># reordenar y renombrar</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> meta <span class="sc">|&gt;</span> </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_coordinates</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(meta) <span class="sc">|&gt;</span> </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(name,<span class="at">.before =</span>X) <span class="sc">|&gt;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(altura,<span class="at">.before=</span> X) <span class="sc">|&gt;</span> </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>geometry) <span class="sc">|&gt;</span> </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">altura =</span> <span class="fu">as.numeric</span>(altura)) <span class="sc">|&gt;</span> </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ID =</span> name,<span class="at">ALT =</span> altura) <span class="sc">|&gt;</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 879
+Columns: 4
+$ ID  &lt;chr&gt; "01000005", "01200002", "01200003", "01201005", "01201010", "01201…
+$ ALT &lt;dbl&gt; 4080, 4080, 3980, 3908, 3990, 3550, 4400, 3750, 4185, 4550, 4540, …
+$ X   &lt;dbl&gt; 448741.8, 423213.5, 425412.8, 425892.9, 430190.2, 432978.6, 478654…
+$ Y   &lt;dbl&gt; 8054556, 8034902, 8027929, 8027068, 8010454, 8009302, 8003806, 799…</code></pre>
+</div>
+</div>
+<p>Tambien toma dos objetivos de clase Date en formato ‘YYYY-mm-dd’ definiendo el primer (inidate) y ultimo (enddate) dia para el proceso control de calidad.</p>
+<p>Funcion qcPrec():</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-7_9dbc45737818b2261056f9178ed8fbfd">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#qcPrec(data_pre_mat, meta_df, as.Date("1981-01-01"), as.Date("2020-03-31"), parallel = TRUE, ncpu = 85, printmeta = TRUE, thres = NA)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Luego de esta funcion se crea un nuevo archivo llamado Cleaned.RData y almacenado el directorio de trabajo. Al cargar este archivo se agregara una matriz con la data filtrada por el control de calidad.</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-8_3b1724b5c3431fb4a5d5b9d8024006b9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">'../cleaned.RData'</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>prec <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dates =</span> <span class="fu">seq</span>(<span class="fu">ymd</span>(<span class="dv">19810101</span>),<span class="fu">ymd</span>(<span class="dv">20200331</span>),<span class="at">by=</span><span class="dv">1</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>dates,<span class="at">names_to =</span> <span class="st">'codigo_estacion'</span>,<span class="at">values_to =</span> <span class="st">'pre'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(<span class="st">'../data/data_procesada/data_1981_2020_chile_qc.rds'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 8,572,330
+Columns: 3
+$ dates           &lt;date&gt; 1981-01-01, 1981-01-01, 1981-01-01, 1981-01-01, 1981-…
+$ codigo_estacion &lt;chr&gt; "01000005", "01001005", "01010007", "01010010", "01020…
+$ pre             &lt;dbl&gt; 0.0, 0.0, NA, NA, 3.1, 3.0, NA, 0.0, 10.0, 0.0, NA, 0.…</code></pre>
+</div>
+</div>
+<p>Leer datos de salida (justo al control de calidad de los datos de agromet): se obtienen los valores de precipitacion para 1,011 estaciones</p>
+<div class="cell" data-hash="Reporte_datos_Precipitacion_2023_cache/html/unnamed-chunk-9_9c4ff4518408f6c4b2c5bf48ff2c3798">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data_pre_cr2 <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/data_CR2_1981_2020_chile_qc.rds'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data_pre_agromet <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">'../data/data_procesada/data_agromet_20100102_20230521_chile_qc.rds'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(data_pre_cr2,data_pre_agromet) <span class="sc">|&gt;</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 11,148,306
+Columns: 3
+$ dates           &lt;date&gt; 1981-01-01, 1981-01-01, 1981-01-01, 1981-01-01, 1981-…
+$ codigo_estacion &lt;chr&gt; "01000005", "01001005", "01010007", "01010010", "01020…
+$ pre             &lt;dbl&gt; 0.0, 0.0, NA, NA, 3.1, 3.0, NA, 0.0, 10.0, 0.0, NA, 0.…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(data_pre_cr2,data_pre_agromet) <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(codigo_estacion) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,101
+Columns: 1
+$ codigo_estacion &lt;chr&gt; "01000005", "01001005", "01010007", "01010010", "01020…</code></pre>
+</div>
+</div>
+</section>
+<section id="referencias" class="level2">
+<h2 class="anchored" data-anchor-id="referencias">Referencias</h2>
+<p>Serrano-Notivoli, R., de Luis, M., &amp; Beguería, S. (2017). An R package for daily precipitation climate series reconstruction. Environmental modelling &amp; software, 89, 190-195.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
